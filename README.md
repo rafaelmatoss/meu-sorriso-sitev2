@@ -1,6 +1,6 @@
 # Associação Meu Sorriso — Website Oficial
 
-Website institucional e plataforma de cadastro da **Associação Meu Sorriso**, organização sem fins lucrativos sediada em Salvador/BA que promove inclusão, esporte, lazer e cultura para pessoas com deficiência e suas famílias por meio do compartilhamento gratuito de equipamentos adaptados[cite: 1, 4].
+Website institucional e plataforma de cadastro da **Associação Meu Sorriso**, organização sem fins lucrativos sediada em Salvador/BA que promove inclusão, esporte, lazer e cultura para pessoas com deficiência e suas famílias por meio do compartilhamento gratuito de equipamentos adaptados.
 
 🌐 **Domínio oficial:** [projetomeusorriso.com.br](https://projetomeusorriso.com.br)
 
@@ -8,9 +8,9 @@ Website institucional e plataforma de cadastro da **Associação Meu Sorriso**, 
 
 ## 📌 Visão Geral
 
-O site apresenta as iniciativas da associação, o acervo de tecnologias assistivas disponíveis (como triciclos assistidos, handbikes, bicicletas tandem e cadeiras anfíbias)[cite: 3], uma seção de perguntas frequentes (FAQ) e um sistema integrado para cadastro de associados e responsáveis[cite: 2].
+O site apresenta as iniciativas da associação, o acervo de tecnologias assistivas disponíveis (como triciclos assistidos, handbikes, bicicletas tandem e cadeiras anfíbias), uma seção de perguntas frequentes (FAQ) e um sistema integrado para cadastro de associados e responsáveis.
 
-O fluxo de cadastro realiza a persistência direta em banco de dados na nuvem e gera um resumo pré-formatado para envio imediato via WhatsApp ou e-mail à equipe de coordenação[cite: 2].
+O fluxo de cadastro realiza a persistência direta em banco de dados na nuvem e gera um resumo pré-formatado para envio imediato via WhatsApp ou e-mail à equipe de coordenação.
 
 ---
 
