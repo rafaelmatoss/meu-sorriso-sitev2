@@ -1,0 +1,50 @@
+SITE ASSOCIACAO MEU SORRISO - COMO PUBLICAR NO HOSTGATOR
+=========================================================
+
+Este site e HTML/CSS/JavaScript puro. Nao precisa de PHP, banco de dados nem instalacao.
+
+1) PUBLICAR (cPanel do HostGator)
+   a. Entre no cPanel > "Gerenciador de Arquivos" > pasta public_html
+      (se o site for de um subdominio ou dominio adicional, use a pasta dele).
+   b. Apague o index.html / default.html de boas-vindas da HostGator, se existir.
+   c. Clique em "Carregar" e envie o arquivo site-v2.zip. Depois clique com o botao
+      direito nele > "Extrair" (Extract) na propria public_html.
+      Alternativa: descompacte no computador e envie o CONTEUDO da pasta
+      (nao a pasta em si), por FTP ou pelo Gerenciador de Arquivos.
+   d. Confira que o arquivo index.html ficou DIRETO dentro de public_html
+      (e nao dentro de uma subpasta), junto de css/, js/, img/ e fonts/.
+   e. Se os arquivos que comecam com ponto nao aparecerem, no Gerenciador de Arquivos
+      va em "Configuracoes" e marque "Mostrar arquivos ocultos" (o .htaccess e um deles).
+   f. Abra o dominio no navegador. Pronto.
+
+2) AJUSTES DEPOIS DE PUBLICAR (5 minutos)
+   - HTTPS: no cPanel ative o SSL gratuito (AutoSSL / Let's Encrypt). Depois, abra o
+     arquivo .htaccess e tire o # das 3 linhas do bloco "Para forcar HTTPS".
+   - Imagem de compartilhamento (WhatsApp, Facebook, LinkedIn): nos 4 arquivos .html
+     (index, equipamentos, cadastro, 404) procure  https://www.SEUDOMINIO.com.br
+     e troque pelo endereco real do site (Editar > Localizar e substituir).
+   - Busca do Google: depois de publicar, cadastre o site no Google Search Console.
+
+3) COMO O CADASTRO FUNCIONA HOJE
+   O formulario nao grava nada em servidor. Ao enviar, o site monta um resumo e a pessoa
+   escolhe enviar por WhatsApp (71) 99722-0221, por e-mail (meu_sorriso@outlook.com) ou
+   copiar. O banco de dados de associados/equipamentos e o sistema de reservas ficam
+   para a proxima fase.
+
+4) EDITAR TEXTOS E FOTOS
+   - Textos: abra o .html no Editor de Arquivos do cPanel e altere o texto entre as tags.
+   - Fotos: fica tudo em img/. Para trocar, substitua o arquivo mantendo o mesmo nome
+     (formato .webp, ideal 1400 px no lado maior). Fotos em maior resolucao deixam o
+     site ainda melhor: as atuais vieram da apresentacao, que e de baixa resolucao.
+   - Logo e simbolo sao vetoriais (vieram do manual de identidade visual) e ja estao
+     dentro das paginas.
+   - Faltam fotos de 3 equipamentos (Framerunning, Braco de transferencia e Trailer):
+     hoje esses cartoes sao tipograficos. Ao ter as fotos, e so incluir em equipamentos.html.
+
+5) PASTA-FONTE (opcional, para desenvolvedores)
+   A pasta _fonte-v2 (fora desta) guarda os modelos e o script build.py que gera estas
+   paginas a partir de partes reaproveitaveis (cabecalho, rodape). Nao e necessaria para
+   o site funcionar.
+
+Bibliotecas incluidas localmente (nao dependem de CDN): GSAP + ScrollTrigger (animacao
+ligada ao scroll) e Lenis (rolagem suave). Fontes: Bricolage Grotesque e Figtree (SIL OFL).
