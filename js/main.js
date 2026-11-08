@@ -118,171 +118,309 @@
   });
 
   /* ------------------------------------------------------------------ formulário de cadastro */
- var form = $("#cadForm");
-if (form) initForm(form);
+  var form = $("#cadForm");
+  if (form) initForm(form);
 
-function initForm(form) {
-  var respList = $("#respList"), msg = $("#formMsg"), count = 0;
-  var area = $("[data-form-area]");
-  function addResp() {
-    count++;
-    var idx = count, w = doc.createElement("div");
-    w.className = "resp";
-    w.innerHTML =
-      '<div class="resp__title">Responsável ' + idx + "</div>" +
-      (idx > 1 ? '<button type="button" class="resp__remove" aria-label="Remover responsável ' + idx + '"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>' : "") +
-      '<div class="field"><label for="respNome' + idx + '">Nome completo</label><input id="respNome' + idx + '" type="text" name="respNome" autocomplete="name" required><span class="err">Informe o nome do responsável.</span></div>' +
-      '<div class="grid-2">' +
-      '<div class="field"><label for="respVinculo' + idx + '">Parentesco ou vínculo</label><input id="respVinculo' + idx + '" type="text" name="respVinculo" placeholder="Mãe, pai, cuidador(a)" required><span class="err">Informe o vínculo.</span></div>' +
-      '<div class="field"><label for="respTel' + idx + '">Telefone ou WhatsApp</label><input id="respTel' + idx + '" type="tel" name="respTel" inputmode="tel" autocomplete="tel" required><span class="err">Informe um telefone.</span></div>' +
-      "</div>" +
-      '<div class="field"><label for="respEmail' + idx + '">E-mail <span class="hint">(opcional)</span></label><input id="respEmail' + idx + '" type="email" name="respEmail" autocomplete="email"></div>';
-    respList.appendChild(w);
-    var rm = $(".resp__remove", w);
-    if (rm) rm.addEventListener("click", function () { w.remove(); });
-  }
-  $("#addResp").addEventListener("click", addResp);
-  addResp();
+  function initForm(form) {
+    var respList = $("#respList"), msg = $("#formMsg"), count = 0;
+    var area = $("[data-form-area]");
 
-  form.addEventListener("reset", function () {
-    msg.innerHTML = "";
-    $$(".has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
-    respList.innerHTML = ""; count = 0; addResp();
-  });
-  form.addEventListener("input", function (e) {
-    var f = e.target.closest(".field, .check");
-    if (f && f.classList.contains("has-error") && e.target.checkValidity()) f.classList.remove("has-error");
-  });
+    // Gerador dinâmico de cards de responsáveis
+    function addResp() {
+      var idx = count++;
+      var w = doc.createElement("div");
+      w.className = "resp";
+      w.id = "resp-" + idx;
+      w.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">' +
+          '<h3 class="resp__title" style="margin-bottom:0">Responsável ' + (idx + 1) + "</h3>" +
+          (idx > 0 ? '<button type="button" class="resp__remove" aria-label="Remover responsável ' + (idx + 1) + '"><svg class="i" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>' : "") +
+        "</div>" +
+        '<div class="field">' +
+          '<label for="respNome-' + idx + '">Nome completo *</label>' +
+          '<input id="respNome-' + idx + '" name="resp_nome[]" type="text" autocomplete="name" required>' +
+          '<span class="err">Informe o nome do responsável.</span>' +
+        "</div>" +
+        '<div class="grid-2">' +
+          '<div class="field">' +
+            '<label for="respVinculo-' + idx + '">Parentesco / Vínculo *</label>' +
+            '<input id="respVinculo-' + idx + '" name="resp_parentesco[]" type="text" placeholder="Mãe, pai, curador(a), cuidador(a)" required>' +
+            '<span class="err">Informe o parentesco ou vínculo.</span>' +
+          "</div>" +
+          '<div class="field">' +
+            '<label for="respTel-' + idx + '">Telefone / WhatsApp *</label>' +
+            '<input id="respTel-' + idx + '" name="resp_tel[]" type="tel" inputmode="tel" placeholder="(71) 90000-0000" required>' +
+            '<span class="err">Informe o telefone.</span>' +
+          "</div>" +
+        "</div>" +
+        '<div class="grid-2">' +
+          '<div class="field">' +
+            '<label for="respRg-' + idx + '">RG do responsável *</label>' +
+            '<input id="respRg-' + idx + '" name="resp_rg[]" type="text" placeholder="Número do RG" required>' +
+            '<span class="err">Informe o RG.</span>' +
+          "</div>" +
+          '<div class="field">' +
+            '<label for="respCpf-' + idx + '">CPF do responsável *</label>' +
+            '<input id="respCpf-' + idx + '" name="resp_cpf[]" type="text" placeholder="000.000.000-00" required>' +
+            '<span class="err">Informe o CPF.</span>' +
+          "</div>" +
+        "</div>" +
+        '<div class="grid-2">' +
+          '<div class="field">' +
+            '<label for="respGenero-' + idx + '">Gênero *</label>' +
+            '<select id="respGenero-' + idx + '" name="resp_genero[]" required>' +
+              '<option value="" disabled selected>Selecione</option>' +
+              '<option value="Feminino">Feminino</option>' +
+              '<option value="Masculino">Masculino</option>' +
+              '<option value="Outro">Outro / Prefiro não informar</option>' +
+            '</select>' +
+            '<span class="err">Selecione o gênero.</span>' +
+          "</div>" +
+          '<div class="field">' +
+            '<label for="respEscolaridade-' + idx + '">Escolaridade *</label>' +
+            '<select id="respEscolaridade-' + idx + '" name="resp_escolaridade[]" required>' +
+              '<option value="" disabled selected>Selecione</option>' +
+              '<option value="Fundamental incompleto">Ensino Fundamental incompleto</option>' +
+              '<option value="Fundamental completo">Ensino Fundamental completo</option>' +
+              '<option value="Médio completo">Ensino Médio completo</option>' +
+              '<option value="Superior completo">Ensino Superior completo</option>' +
+              '<option value="Pós-graduação">Pós-graduação</option>' +
+            '</select>' +
+            '<span class="err">Selecione a escolaridade.</span>' +
+          "</div>" +
+        "</div>" +
+        '<div class="field">' +
+          '<label for="respCamisa-' + idx + '">Tamanho da camisa *</label>' +
+          '<select id="respCamisa-' + idx + '" name="resp_camisa[]" required>' +
+            '<option value="" disabled selected>Selecione o tamanho</option>' +
+            '<option value="PP">PP</option>' +
+            '<option value="P">P</option>' +
+            '<option value="M">M</option>' +
+            '<option value="G">G</option>' +
+            '<option value="GG">GG</option>' +
+            '<option value="XGG">XGG</option>' +
+          '</select>' +
+          '<span class="err">Selecione o tamanho da camisa.</span>' +
+        "</div>";
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-    msg.innerHTML = "";
-    var bad = $$("input:invalid, textarea:invalid", form);
-    $$(".has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
-    if (bad.length) {
-      bad.forEach(function (el) { var f = el.closest(".field, .check"); if (f) f.classList.add("has-error"); });
-      bad[0].focus();
-      msg.innerHTML = '<div class="form-error" role="alert">' + (bad.length === 1 ? "Falta 1 campo obrigatório." : "Faltam " + bad.length + " campos obrigatórios.") + " Confira os campos destacados.</div>";
-      return;
+      respList.appendChild(w);
+      var rm = $(".resp__remove", w);
+      if (rm) rm.addEventListener("click", function () { w.remove(); });
     }
 
-    var d = new FormData(form);
-    var btnSubmit = form.querySelector('button[type="submit"]');
-    var btnOriginalText = btnSubmit.innerHTML;
+    var addBtn = $("#addResp");
+    if (addBtn && respList) {
+      addBtn.addEventListener("click", addResp);
+      if (!respList.children.length) addResp();
+    }
 
-    // Desabilita o botão temporariamente enquanto grava no banco
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = "Gravando no sistema...";
+    form.addEventListener("reset", function () {
+      msg.innerHTML = "";
+      $$(".has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
+      respList.innerHTML = "";
+      count = 0;
+      addResp();
+    });
 
-    try {
-      // 1. Gravar dados da Pessoa com Deficiência (Associado) no Supabase
-      if (window.supabaseClient) {
-        var lgpdCheck = $("#lgpd");
+    form.addEventListener("input", function (e) {
+      var f = e.target.closest(".field, .check");
+      if (f && f.classList.contains("has-error") && e.target.checkValidity()) f.classList.remove("has-error");
+    });
 
-        // Gera o UUID localmente para vincular as tabelas sem precisar de SELECT
-        var novoAssociadoId = (window.crypto && window.crypto.randomUUID)
-          ? window.crypto.randomUUID()
-          : null;
+    // Função de upload seguro com isolamento por UUID e validação MIME
+    async function uploadDocumentoSeguro(client, fileInput, prefixo, pastaUuid) {
+      var file = fileInput.files[0];
+      if (!file) throw new Error("Documento obrigatório não anexado: " + prefixo);
 
-        var payloadAssociado = {
-          nome: d.get("pcdNome"),
-          data_nascimento: d.get("pcdNasc"),
-          telefone: d.get("pcdTel") || null,
-          deficiencia: d.get("pcdDef") || null,
-          cidade: d.get("cidade"),
-          bairro: d.get("bairro"),
-          interesses: d.getAll("interesse"),
-          observacoes: d.get("obs") || null,
-          aceite_lgpd: lgpdCheck ? lgpdCheck.checked : true
-        };
+      var tiposValidos = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+      if (!tiposValidos.includes(file.type)) {
+        throw new Error("Formato não permitido para o arquivo " + file.name + ". Envie PDF ou imagem (JPG/PNG).");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("O arquivo " + file.name + " excede o limite máximo de 5MB.");
+      }
 
-        if (novoAssociadoId) {
-          payloadAssociado.id = novoAssociadoId;
+      var ext = file.name.split(".").pop().toLowerCase();
+      var hashRandom = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID().slice(0, 8) : Math.random().toString(36).slice(2, 10);
+      var caminhoStorage = pastaUuid + "/" + prefixo + "_" + hashRandom + "." + ext;
+
+      var res = await client.storage
+        .from("documentos_pcd")
+        .upload(caminhoStorage, file, { cacheControl: "3600", upsert: false });
+
+      if (res.error) throw res.error;
+      return res.data.path;
+    }
+
+    // Submissão blindada do formulário
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      msg.innerHTML = "";
+
+      // 1. Validação dos termos de uso de equipamentos (todos os checkboxes obrigatórios)
+      var condicoesCheckboxes = $$('input[name="condicoes_uso"]', form);
+      var todasCondicoesAceitas = condicoesCheckboxes.length > 0 && condicoesCheckboxes.every(function (c) { return c.checked; });
+
+      var bad = $$("input:invalid, textarea:invalid, select:invalid", form);
+      $$(".has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
+
+      if (bad.length || !todasCondicoesAceitas) {
+        bad.forEach(function (el) { var f = el.closest(".field, .check"); if (f) f.classList.add("has-error"); });
+        if (!todasCondicoesAceitas) {
+          condicoesCheckboxes.forEach(function (c) {
+            if (!c.checked) { var f = c.closest(".check"); if (f) f.classList.add("has-error"); }
+          });
+        }
+        var primeiroErro = bad[0] || $(".has-error", form);
+        if (primeiroErro) primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
+        msg.innerHTML = '<div class="form-error" role="alert">Existem campos ou declarações pendentes. Por favor, confira os itens destacados em vermelho.</div>';
+        return;
+      }
+
+      var btnSubmit = form.querySelector('button[type="submit"]');
+      var btnOriginalText = btnSubmit.innerHTML;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Validando e enviando documentos...";
+
+      try {
+        if (!window.supabaseClient) {
+          throw new Error("Falha na conexão com o servidor. Verifique sua conexão com a internet.");
         }
 
-        // Apenas INSERT puro (sem .select())
-        var { error: errAssoc } = await window.supabaseClient
-          .from('associados')
-          .insert(payloadAssociado);
+        // 2. Isolamento de pastas por UUID para evitar vazamento ou sobrescrita no Storage
+        var pastaSubmissao = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : "sub_" + Date.now();
+        var pcdId = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : null;
 
-        if (errAssoc) throw errAssoc;
+        var inputLaudo = $("#docLaudo");
+        var inputIdentidade = $("#docIdentidade");
+        var inputComprovante = $("#docComprovante");
 
-        // 2. Gravar os responsáveis vinculados ao ID gerado
-        var nomes = d.getAll("respNome"), vinc = d.getAll("respVinculo"), tels = d.getAll("respTel"), mails = d.getAll("respEmail");
+        btnSubmit.textContent = "Enviando documentos com criptografia...";
+        var paths = await Promise.all([
+          uploadDocumentoSeguro(window.supabaseClient, inputLaudo, "laudo", pastaSubmissao),
+          uploadDocumentoSeguro(window.supabaseClient, inputIdentidade, "identidade", pastaSubmissao),
+          uploadDocumentoSeguro(window.supabaseClient, inputComprovante, "comprovante", pastaSubmissao)
+        ]);
+
+        btnSubmit.textContent = "Gravando cadastro com segurança...";
+
+        // Função auxiliar defensiva para ler valores de inputs/textareas com segurança
+        function val(selector) {
+          var el = $(selector, form);
+          return el ? el.value.trim() : "";
+        }
+
+        function isChecked(selector) {
+          var el = $(selector, form);
+          return el ? el.checked : false;
+        }
+
+        // 3. Montagem do payload da PCD de forma blindada
+        var interesses = [];
+        $$('input[name="interesse"]:checked', form).forEach(function (c) { 
+          interesses.push(c.value); 
+        });
+
+        var payloadPcd = {
+          nome_completo: val("#pcdNome"),
+          data_nascimento: val("#pcdNasc"),
+          telefone: val("#pcdTel") || null,
+          tipo_deficiencia: val("#pcdDef"),
+          interesses: interesses,
+          cep: val("#cep").replace(/\D/g, ""),
+          cidade: val("#cidade") || "Salvador",
+          bairro: val("#bairro"),
+          logradouro: val("#logradouro"),
+          url_laudo: paths[0],
+          url_doc_identidade: paths[1],
+          url_comprovante_residencia: paths[2],
+          observacoes: val("#obs") || null,
+          aceite_estatuto: isChecked("#estatuto"),
+          aceite_termo_imagem: isChecked("#aceiteImagem"),
+          aceite_condicoes_equipamentos: todasCondicoesAceitas,
+          declaracao_veracidade: isChecked("#declaracaoVeracidade"),
+          aceite_lgpd: true,
+          entrevista_realizada: false,
+          inserido_whatsapp: false,
+          status: "pendente_entrevista"
+        };
+
+        if (pcdId) payloadPcd.id = pcdId;
+
+        // INSERT puro (sem .select() para não exigir leitura do RLS)
+        var resPcd = await window.supabaseClient.from("inscricoes_pcd").insert(payloadPcd);
+        if (resPcd.error) throw resPcd.error;
+
+      // 4. Montagem e gravação dos responsáveis vinculados
+        var nomesResp = $$('input[name="resp_nome[]"]', form);
+        var vincResp = $$('input[name="resp_parentesco[]"]', form);
+        var telsResp = $$('input[name="resp_tel[]"]', form);
+        var rgsResp = $$('input[name="resp_rg[]"]', form);
+        var cpfsResp = $$('input[name="resp_cpf[]"]', form);
+        var genResp = $$('select[name="resp_genero[]"]', form);
+        var escResp = $$('select[name="resp_escolaridade[]"]', form);
+        var camResp = $$('select[name="resp_camisa[]"]', form);
+
         var listaResponsaveis = [];
-
-        for (var i = 0; i < nomes.length; i++) {
-          if (nomes[i].trim()) {
+        for (var i = 0; i < nomesResp.length; i++) {
+          var n = nomesResp[i] ? nomesResp[i].value.trim() : "";
+          if (n) {
             listaResponsaveis.push({
-              associado_id: novoAssociadoId,
-              nome: nomes[i],
-              vinculo: vinc[i],
-              telefone: tels[i],
-              email: mails[i] || null
+              pcd_id: pcdId,
+              nome_completo: n,
+              parentesco_vinculo: vincResp[i] ? vincResp[i].value.trim() : "",
+              telefone: telsResp[i] ? telsResp[i].value.trim() : "",
+              rg: rgsResp[i] ? rgsResp[i].value.trim() : "",
+              cpf: cpfsResp[i] ? cpfsResp[i].value.trim() : "",
+              genero: genResp[i] ? genResp[i].value : "",
+              escolaridade: escResp[i] ? escResp[i].value : "",
+              tamanho_camisa: camResp[i] ? camResp[i].value : ""
             });
           }
         }
 
         if (listaResponsaveis.length > 0) {
-          var { error: errResp } = await window.supabaseClient
-            .from('responsaveis')
-            .insert(listaResponsaveis);
-          if (errResp) throw errResp;
+          var resResp = await window.supabaseClient.from("responsaveis_pcd").insert(listaResponsaveis);
+          if (resResp.error) throw resResp.error;
         }
+
+        // 5. Sucesso: Tela de confirmação protegida (sem expor documentos ou CPFs em tela)
+        form.hidden = true;
+        var pcdNome = payloadPcd.nome_completo;
+        var msgSucesso = doc.createElement("div");
+        msgSucesso.className = "confirm";
+        msgSucesso.setAttribute("role", "status");
+        msgSucesso.innerHTML =
+          "<h2>Cadastro enviado com sucesso!</h2>" +
+          "<p>Os dados de <strong>" + esc(pcdNome) + "</strong> e os documentos anexados foram gravados de forma segura e criptografada em nosso servidor.</p>" +
+          '<div style="background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);padding:20px;margin:24px 0">' +
+            '<p style="margin:0 0 8px"><strong>Próximos passos:</strong></p>' +
+            '<ol style="list-style:decimal;padding-left:20px;margin:0;line-height:1.6">' +
+              "<li>Nossa equipe técnica avaliará a documentação médica enviada.</li>" +
+              "<li>Entraremos em contato pelo telefone cadastrado para <strong>agendar a entrevista presencial de apresentação</strong>.</li>" +
+              "<li>Após a entrevista concluída, seu cadastro será homologado e você será incluído no grupo oficial de WhatsApp da Associação.</li>" +
+            "</ol>" +
+          "</div>" +
+          '<div class="confirm__actions">' +
+            '<a class="btn btn--primary" href="https://wa.me/5571997220121?text=' + encodeURIComponent("Olá! Enviei a ficha de cadastro e os documentos de " + pcdNome + " pelo site e gostaria de confirmar o recebimento para agendamento da entrevista.") + '" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 256 256"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176Z"/></svg>Avisar equipe no WhatsApp</a>' +
+            '<a class="btn btn--ghost" href="index.html">Voltar ao início</a>' +
+          "</div>";
+
+        area.appendChild(msgSucesso);
+        scrollToEl(msgSucesso);
+
+      } catch (err) {
+        console.error("Erro durante o processo de cadastro:", err);
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = btnOriginalText;
+        msg.innerHTML = '<div class="form-error" role="alert">Ocorreu um erro ao salvar o cadastro: ' + (err.message || err) + '</div>';
+        msg.scrollIntoView({ behavior: "smooth" });
       }
-    } catch (errBanco) {
-      console.error("Erro ao salvar no Supabase:", errBanco);
-      btnSubmit.disabled = false;
-      btnSubmit.innerHTML = btnOriginalText;
-      msg.innerHTML = '<div class="form-error" role="alert">Erro ao registrar cadastro no banco: ' + (errBanco.message || errBanco) + '</div>';
-      return; // Interrompe se o banco falhar, para não gerar falso positivo
-    }
-
-    // Restaura o botão caso o usuário decida editar depois
-    btnSubmit.disabled = false;
-    btnSubmit.innerHTML = btnOriginalText;
-
-    // 3. Mantém 100% da lógica original: Resumo visual, WhatsApp e E-mail
-    var interesses = d.getAll("interesse"), nomes = d.getAll("respNome"), vinc = d.getAll("respVinculo"), tels = d.getAll("respTel"), mails = d.getAll("respEmail");
-    var L = [];
-    L.push("CADASTRO - ASSOCIAÇÃO MEU SORRISO", "");
-    L.push("Pessoa com deficiência: " + d.get("pcdNome"));
-    L.push("Nascimento: " + fmtDate(d.get("pcdNasc")));
-    if (d.get("pcdTel")) L.push("Telefone: " + d.get("pcdTel"));
-    if (d.get("pcdDef")) L.push("Deficiência: " + d.get("pcdDef"));
-    L.push("Endereço: " + d.get("bairro") + ", " + d.get("cidade"));
-    L.push("Interesse: " + (interesses.length ? interesses.join(", ") : "não informado"), "");
-    for (var i = 0; i < nomes.length; i++) {
-      L.push("Responsável " + (i + 1) + ": " + nomes[i] + " (" + vinc[i] + ")");
-      L.push("  Telefone: " + tels[i] + (mails[i] ? "  |  E-mail: " + mails[i] : ""));
-    }
-    if (d.get("obs")) L.push("", "Observações: " + d.get("obs"));
-    var texto = L.join("\n");
-
-    var box = doc.createElement("div");
-    box.className = "confirm"; box.setAttribute("role", "status");
-    box.innerHTML =
-      "<h2>Cadastro salvo com sucesso!</h2>" +
-      "<p>Os dados já estão registrados no nosso sistema. Caso queira, você também pode enviar a cópia direto para o WhatsApp da equipe:</p>" +
-      "<pre>" + esc(texto) + "</pre>" +
-      '<div class="confirm__actions">' +
-      '<a class="btn btn--primary" href="https://wa.me/5571997220221?text=' + encodeURIComponent(texto) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp-logo"/></svg>Enviar por WhatsApp</a>' +
-      '<a class="btn btn--ghost" href="mailto:meu_sorriso@outlook.com?subject=' + encodeURIComponent("Cadastro - " + d.get("pcdNome")) + "&body=" + encodeURIComponent(texto) + '">Enviar por e-mail</a>' +
-      '<button type="button" class="btn btn--ghost" data-c>Copiar dados</button>' +
-      '<button type="button" class="btn btn--ghost" data-e>Editar cadastro</button>' +
-      "</div>";
-    form.hidden = true;
-    area.appendChild(box);
-    scrollToEl(box);
-    $("[data-c]", box).addEventListener("click", function () {
-      var b = this; copyText(texto).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar dados"; }, 2200); });
     });
-    $("[data-e]", box).addEventListener("click", function () { box.remove(); form.hidden = false; scrollToEl(form); });
-  });
 
-  function fmtDate(v) { if (!v) return ""; var p = v.split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : v; }
-  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-}
+    function esc(s) { return String(s || "").replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  }
+
   /* ------------------------------------------------------------------ daqui pra frente: só movimento */
   if (!hasGsap || reduce) { finish(); return; }
 
